@@ -1,0 +1,50 @@
+--By Sedulus, aka Snek#6190 on Discord--
+
+--//Normal Variables\\--
+local sk = Enum.KeyCode.K -- Kills the script/events
+local tk = Enum.KeyCode.B -- Toggles the autokill on/off
+local uis = game:GetService("UserInputService")
+--//Adjustable Variables\\--
+local p = game:GetService('Players').LocalPlayer
+local pl = game:GetService('Players')
+local m = p:GetMouse()
+local cc = game.Workspace.CurrentCamera
+local tog = true
+local e1, e2
+--//On by Default (I wouldn't change this)\\--
+p.CameraMode = Enum.CameraMode.LockFirstPerson
+if game:GetService("Workspace"):FindFirstChild("deadbodies") then
+   game:GetService("Workspace").deadbodies:Destroy()
+end
+--//Aim & Shoot Function\\--
+function ka(t)
+if t ~= p.Name then
+if tog == true then
+ch = p.Character
+ch.HumanoidRootPart.CFrame = CFrame.new(ch.HumanoidRootPart.Position, pl[t].Character.HumanoidRootPart.Position)
+cc.CFrame = CFrame.new(ch.HumanoidRootPart.Position, pl[t].Character.HumanoidRootPart.Position)
+repeat wait(.005) mouse1click() until game.Workspace.gunholder[t] == nil
+end
+end
+end
+--//Toggle Detection\\--
+e1 = uis.InputBegan:Connect(function(o)
+   if uis:GetFocusedTextBox() then return end
+   ------------------------------------------
+if o.KeyCode == tk and tog == true then
+ch = p.Character
+p.CameraMode = Enum.CameraMode.Classic
+tog = false
+elseif o.KeyCode == tk and tog == false then
+p.CameraMode = Enum.CameraMode.LockFirstPerson
+tog = true
+elseif o.KeyCode == sk then
+e1:Disconnect();e2:Disconnect();p.CameraMode = Enum.CameraMode.Classic;ka = nil
+end
+end)
+--//Gun Detection\\--
+e2 = game.Workspace.light.PointLight.Changed:Connect(function()
+game.Workspace.gunholder.ChildAdded:Connect(function(c)
+ka(c.Name)
+end)
+end)
